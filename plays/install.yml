@@ -1,0 +1,18 @@
+---
+- hosts: pulp
+  vars:
+    pulp_default_admin_password: chicken-noodle-soup
+    pulp_settings:
+      secret_key: fresh-mint-delicious-eagle
+      content_origin: "http://"
+    pulp_install_plugins:
+      pulp-container: {}
+      pulp-deb: {}
+  environment:
+    DJANGO_SETTINGS_MODULE: pulpcore.app.settings
+  pre_tasks:
+    - name: Ensure apt cache is up to date 
+      apt:
+        update_cache: yes
+  roles:
+    - pulp.pulp_installer.pulp_all_services

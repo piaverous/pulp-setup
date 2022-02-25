@@ -1,0 +1,33 @@
+- hosts: pulp
+  tasks:
+    - name: Create a deb repository
+      pulp.squeezer.deb_repository:
+        pulp_url: http://localhost:24817
+        username: admin
+        password: chicken-noodle-soup
+        name: nginx
+        description: An nginx repo
+        state: present
+
+    - name: Create a deb remote
+      pulp.squeezer.deb_remote:
+        pulp_url: http://localhost:24817
+        username: admin
+        password: chicken-noodle-soup
+        name: nginx-remote
+        url: https://nginx.org/packages/ubuntu/
+        distributions: focal
+        state: present
+
+    - name: Sync deb remote into repository
+      pulp.squeezer.deb_sync:
+        pulp_url: http://localhost:24817
+        username: admin
+        password: chicken-noodle-soup
+        repository: nginx
+        remote: nginx-remote
+      register: sync_result
+
+    - name: Report synched repository version
+      debug:
+        var: sync_result
